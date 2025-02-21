@@ -14,7 +14,8 @@ export const useAuthStore = create((set) => ({
     try {
       const res = await axiosInstance.get("/auth/check");
       set({ authUser: res.data });
-      localStorage.setItem("authUser", JSON.stringify(res.data)); 
+      console.log("getting authdata", res.data);
+      // localStorage.setItem("authUser", JSON.stringify(res.data)); 
     } catch (error) {
       console.log("error in checkAuth", error);
       set({ authUser: null });
@@ -29,7 +30,7 @@ export const useAuthStore = create((set) => ({
     try {
       const res = await axiosInstance.post("/auth/signup", data);
       set({ authUser: res.data });
-      localStorage.setItem("authUser", JSON.stringify(res.data)); 
+      // localStorage.setItem("authUser", JSON.stringify(res.data)); 
       toast.success("account created successfully");
     } catch (error) {
       toast.error(error.response.data.message);
