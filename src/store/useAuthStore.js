@@ -3,7 +3,7 @@ import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 
 export const useAuthStore = create((set) => ({
-  authUser: JSON.parse(localStorage.getItem("authUser")) || null, 
+  authUser: JSON.parse(localStorage.getItem("authUser")) || null,
   isSignedUp: false,
   isSigningUp: false,
   isLoggingIn: false,
@@ -14,11 +14,11 @@ export const useAuthStore = create((set) => ({
     try {
       const res = await axiosInstance.get("/auth/check");
       set({ authUser: res.data });
-      localStorage.setItem("authUser", JSON.stringify(res.data)); 
+      localStorage.setItem("authUser", JSON.stringify(res.data));
     } catch (error) {
       console.log("error in checkAuth", error);
       set({ authUser: null });
-      localStorage.removeItem("authUser"); 
+      localStorage.removeItem("authUser");
     } finally {
       set({ isCheckingAuth: false });
     }
@@ -29,10 +29,12 @@ export const useAuthStore = create((set) => ({
     try {
       const res = await axiosInstance.post("/auth/signup", data);
       set({ authUser: res.data });
-      localStorage.setItem("authUser", JSON.stringify(res.data)); 
-      toast.success("account created successfully");
+      localStorage.setItem("authUser", JSON.stringify(res.data));
+      toast.success("Account created successfully");
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(
+        error?.response?.data?.message || "An error occurred during signup"
+      );
     } finally {
       set({ isSigningUp: false });
     }
@@ -43,10 +45,12 @@ export const useAuthStore = create((set) => ({
     try {
       const res = await axiosInstance.post("/auth/login", data);
       set({ authUser: res.data });
-      localStorage.setItem("authUser", JSON.stringify(res.data)); 
-      toast.success("user logged in successfully");
+      localStorage.setItem("authUser", JSON.stringify(res.data));
+      toast.success("User logged in successfully");
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(
+        error?.response?.data?.message || "An error occurred during login"
+      );
     } finally {
       set({ isLoggingIn: false });
     }
@@ -56,27 +60,30 @@ export const useAuthStore = create((set) => ({
     try {
       await axiosInstance.post("/auth/logout");
       set({ authUser: null });
-      localStorage.removeItem("authUser"); // Clear localStorage on logout
+      localStorage.removeItem("authUser");
       toast.success("Logged out successfully");
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(
+        error?.response?.data?.message || "An error occurred during logout"
+      );
     }
   },
 
   updateProfile: async (data) => {
-    set({isUpdatingProfile: true});
+    set({ isUpdatingProfile: true });
     try {
-        const res = await axiosInstance.put("/auth/update-profile", data);
-        set({ authUser: res.data });
-       localStorage.setItem("authUser", JSON.stringify(data));
-       toast.success("Profile updated successfully");
+      const res = await axiosInstance.put("/auth/update-profile", data);
+      set({ authUser: res.data });
+      localStorage.setItem("authUser", JSON.stringify(res.data)); // Corrected here
+      toast.success("Profile updated successfully");
     } catch (error) {
-        console.log("error in updateProfile");
-      toast.error(error.response.data.message);
-    }
-    finally{
-        set({isUpdatingProfile: false});
-
+      console.log("error in updateProfile", error);
+      toast.error(
+        error?.response?.data?.message ||
+          "An error occurred during profile update"
+      );
+    } finally {
+      set({ isUpdatingProfile: false });
     }
   },
 }));

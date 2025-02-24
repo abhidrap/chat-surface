@@ -12,7 +12,7 @@ const ProfilePage = () => {
     if (!authUser) {
       checkAuth();
     }
-  }, [authUser, checkAuth]);
+  });
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
