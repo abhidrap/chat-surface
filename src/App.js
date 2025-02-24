@@ -15,8 +15,11 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
+    console.log("1");
     checkAuth();
-  }, [checkAuth]);
+    console.log("2");
+
+  },[]);
 
   console.log({ authUser });
 
